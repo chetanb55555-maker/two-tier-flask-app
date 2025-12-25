@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: chetanbardole/mysql
+    image: chetanbardole/mysql:5.7
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -20,7 +20,7 @@ services:
       start_period: 60s
 
   flask-app:
-    image: chetanbardole/flask-app-multi
+    image: chetanbardole/flask-app-multi:latest
     container_name: flask-app
     ports:
       - "5000:5000"
