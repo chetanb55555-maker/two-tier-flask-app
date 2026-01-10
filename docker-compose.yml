@@ -32,12 +32,12 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_DB: devops
     depends_on:
-      - mysql
+      condition: service_healthy
     networks:
       - twotier
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
