@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   mysql:
     image: mysql:5.7
@@ -22,15 +24,16 @@ services:
   flask-app:
     build:
       context: .
+      dockerfile: Dockerfile-multistage   # <- specify multistage Dockerfile here
     image: flask-app
     container_name: flask-app
     ports:
       - "80:5000"
     environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_DB: devops
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DB}
     depends_on:
       mysql:
         condition: service_healthy
@@ -38,7 +41,7 @@ services:
       - twotier
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,3 +49,4 @@ services:
 
 networks:
   twotier:
+
