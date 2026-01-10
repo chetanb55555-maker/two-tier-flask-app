@@ -1,0 +1,20 @@
+stages:
+  - build
+  - deploy
+  - finish
+
+build-job:
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - echo "Build complete."
+
+test-job1:
+  stage: deploy
+  script:
+    - docker compose up -d 
+
+test-job2:
+  stage: finish
+  script:
+    - echo " Pipeline Completed..."
