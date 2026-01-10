@@ -1,9 +1,9 @@
-# ------------------- Stage 1: Build Stage ------------------------------
+# ------------------- Stage 1: Builder ------------------------------
 FROM python:3.9 AS builder
 
 WORKDIR /app
 
-# Install build dependencies
+# Build dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc default-libmysqlclient-dev pkg-config && \
     rm -rf /var/lib/apt/lists/*
@@ -12,24 +12,27 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ------------------- Stage 2: Final Stage ------------------------------
+# ------------------- Stage 2: Final ------------------------------
 FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install runtime dependencies
+# Runtime dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends libmariadb-dev curl gcc && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Python packages from builder (core libraries)
+# Copy Python libraries from builder
 COPY --from=builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 
-# Install gunicorn in the final stage so the binary exists
+# Install gunicorn **in the final stage**
 RUN pip install gunicorn
 
 # Copy application code
 COPY . .
 
-# Run with Gunicorn
+# Make sure PATH includes /usr/local/bin (default in python:3.9-slim)
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Run app with gunicorn
 CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "app:app"]
