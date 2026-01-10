@@ -9,12 +9,12 @@ build-job:
     - echo "Compiling the code..."
     - echo "Build complete."
 
-deploy-job1:
+deploy-job:
   stage: deploy
   script:
     - docker compose up -d 
 
-finish-job2:
+finish-job:
   stage: finish
   script:
     - echo " Pipeline Completed..."
