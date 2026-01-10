@@ -12,7 +12,10 @@ build-job:
 deploy-job:
   stage: deploy
   script:
-    - docker compose up -d 
+    - docker compose build flask-app   # ensures multistage Dockerfile is used
+    - docker compose up -d
+  only:
+    - main
 
 finish-job:
   stage: finish
